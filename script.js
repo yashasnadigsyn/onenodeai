@@ -1,126 +1,381 @@
-// OneNodeAI scroll stages: black theme, 5 short chapters.
-// Chapters update rail (right), dots, counters, top progress + rail fill.
-const stages = [...document.querySelectorAll('.stage')];
-const railItems = [...document.querySelectorAll('.rail-item')];
-const dots = [...document.querySelectorAll('.dots button')];
-const curNum = document.getElementById('curNum');
-const topNum = document.getElementById('topNum');
-const progressBar = document.getElementById('progressBar');
-const railFill = document.getElementById('railFill');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const finePointer = window.matchMedia('(pointer: fine)').matches;
+const chapters = [...document.querySelectorAll('.chapter')];
+const railLinks = [...document.querySelectorAll('.chapter-rail a')];
+const progressBar = document.getElementById('scrollProgress');
+const chapterFill = document.getElementById('chapterFill');
+const coreVisual = document.getElementById('coreVisual');
+const automatedPreview = navigator.webdriver || /HeadlessChrome/i.test(navigator.userAgent);
+const previewTarget = new URLSearchParams(window.location.search).get('preview');
 
-function setActive(id, num) {
-  document.body.dataset.active = num;
-  if (curNum) curNum.textContent = num;
-  if (topNum) topNum.textContent = num;
-  stages.forEach((s) => s.classList.toggle('is-active', s.id === id));
-  railItems.forEach((r) => r.classList.toggle('is-active', r.dataset.target === id));
-  dots.forEach((d) => d.classList.toggle('is-active', d.dataset.target === id));
-  // rail fill: fraction through 01..05
-  if (railFill) {
-    const idx = stages.findIndex((s) => s.id === id);
-    const frac = stages.length > 1 ? idx / (stages.length - 1) : 0;
-    railFill.style.height = `calc(${(frac * 100).toFixed(1)}% * 0.60)`;
-    // rail spans 20%..80% of height (60% total) — scale fill to that band
+// Screenshot crawlers should capture the page itself, not the brief opening calibration.
+if (automatedPreview) {
+  document.querySelector('.loader')?.remove();
+  document.body.classList.add('is-loaded', 'is-automated');
+  if (previewTarget) {
+    document.body.classList.add('has-preview');
+    document.getElementById(previewTarget)?.classList.add('preview-visible');
   }
 }
 
-let currentId = null;
-
-const stageObs = new IntersectionObserver((entries) => {
-  // pick the most-visible stage (smoothest during crossfade, no flicker)
-  let best = null;
-  let bestRatio = 0;
-  entries.forEach((en) => {
-    if (en.intersectionRatio > bestRatio) { bestRatio = en.intersectionRatio; best = en.target; }
+function positionAutomatedPreview() {
+  if (!automatedPreview || !previewTarget) return;
+  const target = document.getElementById(previewTarget);
+  if (!target) return;
+  const previousBehavior = document.documentElement.style.scrollBehavior;
+  document.documentElement.style.scrollBehavior = 'auto';
+  window.scrollTo(0, target.offsetTop);
+  window.requestAnimationFrame(() => {
+    document.documentElement.style.scrollBehavior = previousBehavior;
+    updateScrollState();
   });
-  if (best && bestRatio > 0.35 && best.id !== currentId) {
-    currentId = best.id;
-    setActive(best.id, best.dataset.num);
-  }
-}, { threshold: [0, 0.2, 0.35, 0.5, 0.65, 0.8], rootMargin: '-10% 0px -10% 0px' });
-stages.forEach((s) => stageObs.observe(s));
-
-function goTo(id) {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-// rail + dots + logo click: smooth scroll (native smooth via CSS)
-railItems.forEach((r) => {
-  r.addEventListener('click', (e) => {
-    e.preventDefault();
-    goTo(r.dataset.target);
+/* Opening sequence waits briefly for display fonts, then gets out of the way. */
+const readyFallback = new Promise((resolve) => window.setTimeout(resolve, 900));
+const fontsReady = document.fonts?.ready || Promise.resolve();
+Promise.race([fontsReady, readyFallback]).then(() => {
+  window.requestAnimationFrame(() => {
+    document.body.classList.add('is-loaded');
+    window.setTimeout(() => document.querySelector('.loader')?.remove(), 950);
+    positionAutomatedPreview();
   });
 });
-dots.forEach((d) => {
-  d.addEventListener('click', () => goTo(d.dataset.target));
-});
-document.querySelector('.pill')?.addEventListener('click', (e) => {
-  e.preventDefault();
-  goTo('s01');
+
+window.addEventListener('load', () => window.requestAnimationFrame(positionAutomatedPreview), { once: true });
+
+/* Mobile navigation. */
+const menuToggle = document.querySelector('.menu-toggle');
+const mobileMenu = document.querySelector('.mobile-menu');
+
+function closeMenu() {
+  document.body.classList.remove('menu-open');
+  menuToggle?.setAttribute('aria-expanded', 'false');
+  menuToggle?.setAttribute('aria-label', 'Open menu');
+  mobileMenu?.setAttribute('aria-hidden', 'true');
+}
+
+menuToggle?.addEventListener('click', () => {
+  const willOpen = !document.body.classList.contains('menu-open');
+  document.body.classList.toggle('menu-open', willOpen);
+  menuToggle.setAttribute('aria-expanded', String(willOpen));
+  menuToggle.setAttribute('aria-label', willOpen ? 'Close menu' : 'Open menu');
+  mobileMenu?.setAttribute('aria-hidden', String(!willOpen));
 });
 
-// subtle parallax: drift active headline against scroll + top progress
+document.querySelectorAll('.mobile-menu a').forEach((link) => {
+  link.addEventListener('click', closeMenu);
+});
+
+window.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') closeMenu();
+});
+
+/* Reusable in-view reveals and demo lifecycle. */
+if (reduceMotion) {
+  document.querySelectorAll('.reveal').forEach((element) => element.classList.add('is-revealed'));
+  document.querySelectorAll('.system-card').forEach((element) => element.classList.add('is-inview'));
+} else {
+  const revealObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-revealed');
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+  document.querySelectorAll('.reveal').forEach((element) => revealObserver.observe(element));
+  document.querySelectorAll('.reveal').forEach((element) => {
+    if (element.getBoundingClientRect().top < window.innerHeight * 0.96) {
+      element.classList.add('is-revealed');
+      revealObserver.unobserve(element);
+    }
+  });
+
+  const demoObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      entry.target.classList.toggle('is-inview', entry.isIntersecting);
+    });
+  }, { threshold: 0.35, rootMargin: '-8% 0px -8% 0px' });
+
+  document.querySelectorAll('.system-card').forEach((card) => demoObserver.observe(card));
+}
+
+/* Chapter state and continuous scroll values share one animation frame. */
 let ticking = false;
-function updateProgress() {
-  if (!progressBar) return;
-  const max = document.documentElement.scrollHeight - innerHeight;
-  const p = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
-  progressBar.style.transform = `scaleX(${p.toFixed(4)})`;
+let activeChapter = 'intro';
+let pointerX = 0;
+let pointerY = 0;
+
+function setActiveChapter(chapter) {
+  if (!chapter || chapter.id === activeChapter) return;
+  activeChapter = chapter.id;
+  document.body.dataset.active = activeChapter;
+
+  const index = chapters.indexOf(chapter);
+  railLinks.forEach((link) => {
+    const selected = link.dataset.target === activeChapter;
+    link.classList.toggle('is-active', selected);
+    if (selected) link.setAttribute('aria-current', 'true');
+    else link.removeAttribute('aria-current');
+  });
+
+  if (chapterFill) {
+    const ratio = chapters.length > 1 ? index / (chapters.length - 1) : 0;
+    chapterFill.style.transform = `scaleY(${ratio})`;
+  }
 }
-window.addEventListener('scroll', () => {
+
+function getCenteredChapter() {
+  const focus = window.innerHeight * 0.46;
+  let nearest = chapters[0];
+  let nearestDistance = Infinity;
+
+  chapters.forEach((chapter) => {
+    const rect = chapter.getBoundingClientRect();
+    const inside = rect.top <= focus && rect.bottom >= focus;
+    const distance = inside ? 0 : Math.min(Math.abs(rect.top - focus), Math.abs(rect.bottom - focus));
+    if (distance < nearestDistance) {
+      nearest = chapter;
+      nearestDistance = distance;
+    }
+  });
+
+  return nearest;
+}
+
+function updateScrollState() {
+  const root = document.documentElement;
+  const maxScroll = Math.max(1, root.scrollHeight - window.innerHeight);
+  const pageProgress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+  if (progressBar) progressBar.style.transform = `scaleX(${pageProgress})`;
+
+  setActiveChapter(getCenteredChapter());
+
+  if (coreVisual) {
+    const heroHeight = Math.max(1, document.getElementById('intro')?.offsetHeight || window.innerHeight);
+    const heroProgress = Math.min(1, Math.max(0, window.scrollY / heroHeight));
+    const scrollDrift = heroProgress * -34;
+    coreVisual.style.setProperty('--mx', `${pointerX * 11}px`);
+    coreVisual.style.setProperty('--my', `${pointerY * 9 + scrollDrift}px`);
+    coreVisual.style.opacity = String(Math.max(0, 1 - heroProgress * 1.3));
+  }
+
+  ticking = false;
+}
+
+function requestScrollUpdate() {
   if (ticking) return;
   ticking = true;
-  requestAnimationFrame(() => {
-    stages.forEach((s) => {
-      if (!s.classList.contains('is-active')) return;
-      const r = s.getBoundingClientRect();
-      const p = (r.top + r.height / 2 - innerHeight / 2) / innerHeight; // -0.5..0.5
-      const inner = s.querySelector('.stage-inner');
-      if (inner) inner.style.translate = `0 ${p * -18}px`;
-    });
-    updateProgress();
-    ticking = false;
-  });
-}, { passive: true });
-updateProgress();
+  window.requestAnimationFrame(updateScrollState);
+}
 
-// minimal signal form -> mailto
-document.getElementById('leadForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const f = new FormData(e.target);
-  const name = (f.get('name') || '').toString().trim();
-  const email = (f.get('email') || '').toString().trim();
-  const msg = (f.get('message') || '').toString().trim();
-  const out = document.getElementById('formMsg');
-  if (!name || !email.includes('@') || !msg) { out.textContent = 'FILL ALL THREE FIELDS.'; return; }
-  const subject = encodeURIComponent(`OneNodeAI signal: ${name}`);
-  const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${msg}\n\n— via onenodeai.com`);
-  window.location.href = `mailto:hello@onenodeai.com?subject=${subject}&body=${body}`;
-  out.textContent = 'SIGNAL SENT — REPLY WITHIN 24H.';
-  e.target.reset();
+window.addEventListener('scroll', requestScrollUpdate, { passive: true });
+window.addEventListener('resize', requestScrollUpdate, { passive: true });
+updateScrollState();
+
+/* Core visual reacts gently to intent without chasing the pointer. */
+if (finePointer && !reduceMotion) {
+  document.getElementById('intro')?.addEventListener('pointermove', (event) => {
+    pointerX = event.clientX / window.innerWidth - 0.5;
+    pointerY = event.clientY / window.innerHeight - 0.5;
+    requestScrollUpdate();
+  }, { passive: true });
+}
+
+/* Product card focus follows hover while keyboard focus remains native. */
+document.querySelectorAll('.system-card').forEach((card) => {
+  card.addEventListener('pointerenter', () => {
+    document.querySelectorAll('.system-card').forEach((item) => item.classList.toggle('is-selected', item === card));
+  });
 });
 
-// white custom cursor: instant dot + lerped trailing ring (fine pointers only)
-if (matchMedia('(pointer:fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  const dot = document.createElement('div');
-  dot.className = 'cursor-dot';
-  const ring = document.createElement('div');
-  ring.className = 'cursor-ring';
-  document.body.append(dot, ring);
-  let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my;
-  addEventListener('mousemove', (e) => {
-    mx = e.clientX; my = e.clientY;
-    dot.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
-  }, { passive: true });
-  (function loop() {
-    rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16;
-    ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
-    requestAnimationFrame(loop);
-  })();
-  document.querySelectorAll('a, button, input, .rail-item').forEach((el) => {
-    el.addEventListener('mouseenter', () => ring.classList.add('is-hover'));
-    el.addEventListener('mouseleave', () => ring.classList.remove('is-hover'));
+/* Demo buttons give immediate feedback, but never pretend to perform a real booking. */
+document.querySelectorAll('.bot-actions button').forEach((button) => {
+  button.addEventListener('click', () => {
+    const footer = button.closest('.system-demo')?.querySelector('.demo-footer span:first-child');
+    if (!footer) return;
+    const previous = footer.textContent;
+    footer.textContent = button.textContent === 'CHECK DATE' ? 'HANDOFF PREPARED' : 'GUIDE READY';
+    window.setTimeout(() => { footer.textContent = previous; }, 1800);
   });
-  document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; ring.style.opacity = '0'; });
-  document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; ring.style.opacity = '1'; });
+});
+
+/* Contact form uses the current no-backend mail handoff with clearer context. */
+const leadForm = document.getElementById('leadForm');
+const workflowField = document.getElementById('workflow');
+
+workflowField?.addEventListener('input', () => {
+  workflowField.style.height = 'auto';
+  workflowField.style.height = `${Math.min(workflowField.scrollHeight, 150)}px`;
+});
+
+leadForm?.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const data = new FormData(leadForm);
+  const name = String(data.get('name') || '').trim();
+  const studio = String(data.get('studio') || '').trim();
+  const email = String(data.get('email') || '').trim();
+  const workflow = String(data.get('workflow') || '').trim();
+  const output = document.getElementById('formMsg');
+  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  if (!name || !validEmail || !workflow) {
+    if (output) output.textContent = 'ADD YOUR NAME, A VALID EMAIL, AND THE BOTTLENECK.';
+    return;
+  }
+
+  const subject = encodeURIComponent(`48h pilot signal — ${studio || name}`);
+  const body = encodeURIComponent(
+    `Name: ${name}\nStudio: ${studio || '—'}\nEmail: ${email}\n\nWorkflow bottleneck:\n${workflow}\n\n— sent via onenodeai.com`
+  );
+
+  if (output) output.textContent = 'OPENING YOUR MAIL CLIENT…';
+  window.location.href = `mailto:hello@onenodeai.com?subject=${subject}&body=${body}`;
+});
+
+/* Precision cursor and low-amplitude magnetic controls. */
+if (finePointer && !reduceMotion) {
+  const dot = document.querySelector('.cursor-dot');
+  const ring = document.querySelector('.cursor-ring');
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  let ringX = mouseX;
+  let ringY = mouseY;
+
+  window.addEventListener('pointermove', (event) => {
+    mouseX = event.clientX;
+    mouseY = event.clientY;
+    document.body.classList.add('cursor-ready', 'cursor-enabled');
+    if (dot) dot.style.transform = `translate3d(${mouseX}px,${mouseY}px,0)`;
+  }, { passive: true });
+
+  function drawCursor() {
+    ringX += (mouseX - ringX) * 0.14;
+    ringY += (mouseY - ringY) * 0.14;
+    if (ring) ring.style.transform = `translate3d(${ringX}px,${ringY}px,0)`;
+    window.requestAnimationFrame(drawCursor);
+  }
+  drawCursor();
+
+  document.querySelectorAll('a, button, input, textarea').forEach((element) => {
+    element.addEventListener('pointerenter', () => ring?.classList.add('is-hover'));
+    element.addEventListener('pointerleave', () => ring?.classList.remove('is-hover'));
+  });
+
+  document.querySelectorAll('.system-demo').forEach((element) => {
+    element.addEventListener('pointerenter', () => ring?.classList.add('is-demo'));
+    element.addEventListener('pointerleave', () => ring?.classList.remove('is-demo'));
+  });
+
+  document.querySelectorAll('.magnetic').forEach((element) => {
+    element.addEventListener('pointermove', (event) => {
+      const rect = element.getBoundingClientRect();
+      const x = event.clientX - rect.left - rect.width / 2;
+      const y = event.clientY - rect.top - rect.height / 2;
+      element.style.transform = `translate(${x * 0.055}px,${y * 0.09}px)`;
+    });
+    element.addEventListener('pointerleave', () => {
+      element.style.transform = '';
+    });
+  });
+}
+
+/* A sparse, deterministic node field gives the brand motif depth without video weight. */
+const canvas = document.getElementById('nodeField');
+
+if (canvas && !reduceMotion) {
+  const context = canvas.getContext('2d');
+  let canvasWidth = 0;
+  let canvasHeight = 0;
+  let pixelRatio = 1;
+  let nodes = [];
+  let fieldMouseX = -1000;
+  let fieldMouseY = -1000;
+  let fieldFrame = 0;
+
+  function seeded(index, salt) {
+    const value = Math.sin(index * 91.731 + salt * 17.193) * 43758.5453;
+    return value - Math.floor(value);
+  }
+
+  function buildNodes() {
+    const count = window.innerWidth < 760 ? 14 : Math.min(34, Math.floor(window.innerWidth / 42));
+    nodes = Array.from({ length: count }, (_, index) => ({
+      x: seeded(index, 1) * canvasWidth,
+      y: seeded(index, 2) * canvasHeight,
+      baseX: seeded(index, 1) * canvasWidth,
+      baseY: seeded(index, 2) * canvasHeight,
+      radius: seeded(index, 3) * 1.1 + 0.35,
+      drift: seeded(index, 4) * Math.PI * 2,
+      speed: seeded(index, 5) * 0.004 + 0.0015
+    }));
+  }
+
+  function resizeField() {
+    pixelRatio = Math.min(window.devicePixelRatio || 1, 1.75);
+    canvasWidth = window.innerWidth;
+    canvasHeight = window.innerHeight;
+    canvas.width = Math.round(canvasWidth * pixelRatio);
+    canvas.height = Math.round(canvasHeight * pixelRatio);
+    canvas.style.width = `${canvasWidth}px`;
+    canvas.style.height = `${canvasHeight}px`;
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    buildNodes();
+  }
+
+  function drawField() {
+    fieldFrame += 1;
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    nodes.forEach((node, index) => {
+      const motion = fieldFrame * node.speed;
+      node.x = node.baseX + Math.cos(node.drift + motion) * 11;
+      node.y = node.baseY + Math.sin(node.drift + motion * 1.2) * 9;
+
+      for (let nextIndex = index + 1; nextIndex < nodes.length; nextIndex += 1) {
+        const next = nodes[nextIndex];
+        const dx = node.x - next.x;
+        const dy = node.y - next.y;
+        const distance = Math.hypot(dx, dy);
+        if (distance > 145) continue;
+        context.beginPath();
+        context.moveTo(node.x, node.y);
+        context.lineTo(next.x, next.y);
+        context.strokeStyle = `rgba(240,238,232,${(1 - distance / 145) * 0.055})`;
+        context.lineWidth = 0.6;
+        context.stroke();
+      }
+
+      const mouseDistance = Math.hypot(node.x - fieldMouseX, node.y - fieldMouseY);
+      if (mouseDistance < 165) {
+        context.beginPath();
+        context.moveTo(node.x, node.y);
+        context.lineTo(fieldMouseX, fieldMouseY);
+        context.strokeStyle = `rgba(240,238,232,${(1 - mouseDistance / 165) * 0.13})`;
+        context.lineWidth = 0.7;
+        context.stroke();
+      }
+
+      context.beginPath();
+      context.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+      context.fillStyle = 'rgba(240,238,232,.24)';
+      context.fill();
+    });
+
+    window.requestAnimationFrame(drawField);
+  }
+
+  window.addEventListener('pointermove', (event) => {
+    fieldMouseX = event.clientX;
+    fieldMouseY = event.clientY;
+  }, { passive: true });
+  document.addEventListener('mouseleave', () => {
+    fieldMouseX = -1000;
+    fieldMouseY = -1000;
+  });
+  window.addEventListener('resize', resizeField, { passive: true });
+
+  resizeField();
+  drawField();
 }

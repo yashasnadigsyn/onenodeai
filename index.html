@@ -3,146 +3,359 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OneNodeAI — One Node. All Your AI.</title>
-  <meta name="description" content="OneNodeAI: night-shift bot, second-brain search, Fotos face-grouped albums. Live in 48 hours." />
-  <meta property="og:title" content="OneNodeAI — One Node. All Your AI." />
-  <meta property="og:description" content="Scroll: 2am bot, second brain, instant albums." />
+  <meta name="theme-color" content="#080807" />
+  <title>OneNodeAI — AI systems for creative studios</title>
+  <meta name="description" content="OneNodeAI designs practical AI systems for creative studios. Start with one workflow and a working prototype in 48 hours." />
+  <meta property="og:title" content="OneNodeAI — Creative work without the bottlenecks." />
+  <meta property="og:description" content="AI systems for enquiries, studio knowledge, and photo delivery. A working prototype in 48 hours." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://onenodeai.com" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><ellipse cx='50' cy='50' rx='46' ry='20' fill='none' stroke='white' stroke-width='4'/><circle cx='50' cy='50' r='7' fill='white'/></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='44' fill='%23080706' stroke='%23f0eee8' stroke-width='3'/><circle cx='50' cy='50' r='8' fill='%23f0eee8'/><path d='M6 50h36M58 50h36' stroke='%23f0eee8' stroke-width='3'/></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Inter:wght@300;400;500&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Manrope:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body data-active="01">
+<body data-active="intro">
+  <div class="loader" aria-hidden="true">
+    <div class="loader-mark">
+      <span class="loader-orbit"></span>
+      <span class="loader-node"></span>
+    </div>
+    <p>ONENODE<span>/</span>AI</p>
+  </div>
 
-  <!-- top bar: pill left, index right + progress -->
-  <header class="brand">
-    <a href="#s01" class="pill" aria-label="OneNodeAI home"><i class="pill-dot" aria-hidden="true"></i>ONENODEAI</a>
-    <div class="brand-index" aria-label="Chapter index"><span id="topNum">01</span><em>/</em><span>05</span></div>
+  <canvas class="node-field" id="nodeField" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="scroll-progress" aria-hidden="true"><i id="scrollProgress"></i></div>
+
+  <header class="site-header">
+    <a class="brandmark" href="#intro" aria-label="OneNodeAI home">
+      <svg viewBox="0 0 34 34" aria-hidden="true">
+        <circle class="mark-orbit" cx="17" cy="17" r="13.25"></circle>
+        <path class="mark-axis" d="M1 17h11M22 17h11"></path>
+        <circle class="mark-node" cx="17" cy="17" r="3"></circle>
+      </svg>
+      <span>ONENODE<em>/AI</em></span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <a href="#systems">Systems</a>
+      <a href="#protocol">Protocol</a>
+      <a href="#signal">Contact</a>
+    </nav>
+
+    <a class="header-cta magnetic" href="#signal">
+      <span class="status-dot"></span>
+      <span>48H PROTOTYPE</span>
+      <i aria-hidden="true">↗</i>
+    </a>
+
+    <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span>
+    </button>
   </header>
-  <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
 
-  <!-- right rail 01-05 -->
-  <nav class="rail" aria-label="Chapters">
-    <div class="rail-line"></div>
-    <div class="rail-fill" id="railFill"></div>
-    <a href="#s01" data-target="s01" class="rail-item is-active"><span class="n">01</span><span class="t">INTRO</span></a>
-    <a href="#s02" data-target="s02" class="rail-item"><span class="n">02</span><span class="t">NIGHT BOT</span></a>
-    <a href="#s03" data-target="s03" class="rail-item"><span class="n">03</span><span class="t">BRAIN</span></a>
-    <a href="#s04" data-target="s04" class="rail-item"><span class="n">04</span><span class="t">FOTOS</span></a>
-    <a href="#s05" data-target="s05" class="rail-item"><span class="n">05</span><span class="t">SIGNAL</span></a>
+  <div class="mobile-menu" aria-hidden="true">
+    <a href="#intro"><span>01</span> Introduction</a>
+    <a href="#friction"><span>02</span> Friction</a>
+    <a href="#systems"><span>03</span> Systems</a>
+    <a href="#protocol"><span>04</span> Protocol</a>
+    <a href="#signal"><span>05</span> Start a pilot</a>
+    <p>hello@onenodeai.com</p>
+  </div>
+
+  <nav class="chapter-rail" aria-label="Page chapters">
+    <div class="chapter-track"><i id="chapterFill"></i></div>
+    <a href="#intro" data-target="intro" class="is-active"><b>01</b><span>INTRO</span></a>
+    <a href="#friction" data-target="friction"><b>02</b><span>FRICTION</span></a>
+    <a href="#systems" data-target="systems"><b>03</b><span>SYSTEMS</span></a>
+    <a href="#protocol" data-target="protocol"><b>04</b><span>PROTOCOL</span></a>
+    <a href="#signal" data-target="signal"><b>05</b><span>SIGNAL</span></a>
   </nav>
 
-  <!-- bottom chrome -->
-  <div class="foot-left">© 2026 OneNodeAI</div>
-  <div class="foot-center" id="footCenter">
-    <span class="mouse" aria-hidden="true"><i></i></span>
-    <span class="scroll-word">SCROLL</span>
-    <div class="dots" role="tablist" aria-label="Chapters">
-      <button data-target="s01" class="is-active" aria-label="01 Intro"></button>
-      <button data-target="s02" aria-label="02 Night bot"></button>
-      <button data-target="s03" aria-label="03 Brain"></button>
-      <button data-target="s04" aria-label="04 Fotos"></button>
-      <button data-target="s05" aria-label="05 Signal"></button>
-    </div>
-    <span class="counter"><b id="curNum">01</b> / 05</span>
-  </div>
-  <div class="foot-right">48H PILOT</div>
-
   <main>
-    <!-- 01 INTRO -->
-    <section class="stage" id="s01" data-num="01" data-name="INTRO">
-      <div class="stage-inner">
-        <p class="eyebrow">01 / 05</p>
-        <p class="script">OneNodeAi</p>
-        <h1 class="headline">ONE NODE.<br />ALL YOUR AI.</h1>
-        <p class="sub">Bot. Brain. Fotos. Live in 48 hours.</p>
-      </div>
-    </section>
+    <section class="chapter hero" id="intro" data-chapter="01" data-name="INTRO">
+      <div class="chapter-coordinate mono" aria-hidden="true">NODE 01 / SYSTEM ONLINE</div>
 
-    <!-- 02 NIGHT BOT -->
-    <section class="stage" id="s02" data-num="02" data-name="NIGHT BOT">
-      <div class="stage-inner">
-        <p class="eyebrow">02 — NIGHT BOT</p>
-        <p class="script">night bot</p>
-        <h2 class="headline">2 AM. NO REPLY.<br />LOST BOOKING.</h2>
-        <p class="sub">“Wedding packages?” — 9h silence.</p>
-        <div class="demo chat" aria-hidden="true">
-          <div class="msg user">Wedding packages?</div>
-          <div class="msg typing"><span></span><span></span><span></span></div>
-          <div class="msg bot">3 packages from ₹45k. Full list sent.<em>~4S · WHATSAPP</em></div>
-        </div>
-        <a class="line-link" href="#s05">Fix this →</a>
-      </div>
-    </section>
-
-    <!-- 03 SECOND BRAIN -->
-    <section class="stage" id="s03" data-num="03" data-name="BRAIN">
-      <div class="stage-inner">
-        <p class="eyebrow">03 — BRAIN</p>
-        <p class="script">second brain</p>
-        <h2 class="headline">SCATTERED DOCS.<br />ONE SEARCH.</h2>
-        <p class="sub">Drive. Notion. Chats.</p>
-        <div class="demo" aria-hidden="true">
-          <div class="search-bar"><span class="lens">⌕</span><span class="q">refund policy?</span><span class="caret"></span></div>
-          <div class="cite c1"><b>NOTION · POLICY</b>Full refund till 7 days.</div>
-          <div class="cite c2"><b>DRIVE · PRICELIST</b>Clause §3 matched.</div>
-        </div>
-        <a class="line-link" href="#s05">Fix this →</a>
-      </div>
-    </section>
-
-    <!-- 04 FOTOS -->
-    <section class="stage" id="s04" data-num="04" data-name="FOTOS">
-      <div class="stage-inner">
-        <p class="eyebrow">04 — FOTOS</p>
-        <p class="script">fotos</p>
-        <h2 class="headline">4,000 PHOTOS.<br />ZERO DELIVERED.</h2>
-        <p class="sub">Guests can't find themselves.</p>
-        <div class="demo faces" aria-hidden="true">
-          <div class="pile p1">
-            <div class="avatars"><i style="background:linear-gradient(135deg,#5a4a3a,#2a2118)">A</i><i style="background:linear-gradient(135deg,#4a5a6a,#1d262e)">S</i><i style="background:linear-gradient(135deg,#5a3a4a,#2b1a24)">M</i></div>
-            <span>ASHA · 214</span>
+      <div class="hero-copy">
+        <p class="kicker reveal"><span class="status-dot"></span>AI SYSTEMS STUDIO / CREATIVE OPERATIONS</p>
+        <h1 class="hero-title" aria-label="Creative work without the bottlenecks.">
+          <span class="title-line"><span>CREATIVE WORK</span></span>
+          <span class="title-line title-serif"><span>without the</span></span>
+          <span class="title-line title-indent"><span>BOTTLENECKS.</span></span>
+        </h1>
+        <div class="hero-bottom reveal">
+          <p>We design practical AI systems for creative studios—so enquiries get answered, knowledge stays findable, and galleries deliver themselves.</p>
+          <div class="hero-actions">
+            <a class="button button-light magnetic" href="#systems"><span>EXPLORE SYSTEMS</span><i>↓</i></a>
+            <a class="text-link" href="#signal">START A 48H PILOT <i>↗</i></a>
           </div>
-          <div class="pile p2">
-            <div class="avatars"><i style="background:linear-gradient(135deg,#3a5a4a,#182b22)">R</i><i style="background:linear-gradient(135deg,#5a5a3a,#2b2b18)">V</i><i style="background:linear-gradient(135deg,#3a3a5a,#1c1c2c)">K</i></div>
-            <span>RAVI · 186</span>
-          </div>
-          <div class="scan"></div>
         </div>
-        <a class="fotos-link" href="https://yashasnadigsyn.github.io/fotos" target="_blank" rel="noopener">
-          <span class="f-text">
-            <span class="f-top">LIVE DEMO ↗</span>
-            <span class="f-title">Open Fotos</span>
-          </span>
-          <span class="f-arrow" aria-hidden="true">→</span>
-        </a>
+      </div>
+
+      <div class="core-visual" id="coreVisual" aria-hidden="true">
+        <div class="core-halo"></div>
+        <div class="orbit orbit-a"><i></i><i></i><i></i></div>
+        <div class="orbit orbit-b"><i></i><i></i></div>
+        <div class="orbit orbit-c"></div>
+        <div class="core-node"><span></span></div>
+        <div class="core-axis axis-x"></div>
+        <div class="core-axis axis-y"></div>
+        <div class="core-label label-a"><b>01</b> INQUIRY ROUTING</div>
+        <div class="core-label label-b"><b>02</b> KNOWLEDGE INDEX</div>
+        <div class="core-label label-c"><b>03</b> FACE MATCH</div>
+        <div class="core-readout mono"><span>NODE STATUS</span><b>READY</b></div>
+      </div>
+
+      <div class="hero-proof mono reveal">
+        <span>ONE WORKFLOW</span><i></i><span>REAL DATA</span><i></i><span>WORKING IN 48H</span>
+      </div>
+      <a class="scroll-cue" href="#friction" aria-label="Scroll to friction">
+        <span>SCROLL TO TRACE</span><i></i>
+      </a>
+    </section>
+
+    <section class="chapter friction" id="friction" data-chapter="02" data-name="FRICTION">
+      <div class="section-grid">
+        <div class="section-intro sticky-copy">
+          <p class="kicker reveal">02 / THE FRICTION</p>
+          <h2 class="section-title reveal">YOUR BEST WORK<br />SHOULDN’T BE SLOWED<br />BY THE WORK <em>AROUND IT.</em></h2>
+          <p class="section-copy reveal">The costly moments are usually small: a lead waiting overnight, an answer buried in a folder, a guest still searching through thousands of photographs.</p>
+        </div>
+
+        <div class="trace-panel reveal" aria-label="Three workflow bottlenecks">
+          <div class="trace-head mono"><span>LIVE FRICTION TRACE</span><span>03 SIGNALS FOUND</span></div>
+
+          <article class="trace-row">
+            <div class="trace-time mono">02:13:08</div>
+            <div class="trace-icon"><span class="pulse"></span></div>
+            <div class="trace-copy">
+              <p class="mono">INQUIRY / WHATSAPP</p>
+              <h3>“Can you share your wedding packages?”</h3>
+              <span>Waiting for a reply</span>
+            </div>
+            <div class="trace-state mono">OPEN</div>
+          </article>
+
+          <article class="trace-row">
+            <div class="trace-time mono">11:42:31</div>
+            <div class="trace-icon"><span></span></div>
+            <div class="trace-copy">
+              <p class="mono">KNOWLEDGE / 6 SOURCES</p>
+              <h3>“Which contract has the cancellation clause?”</h3>
+              <span>Searching Drive, Notion, and chat</span>
+            </div>
+            <div class="trace-state mono">BURIED</div>
+          </article>
+
+          <article class="trace-row">
+            <div class="trace-time mono">18:26:54</div>
+            <div class="trace-icon"><span></span></div>
+            <div class="trace-copy">
+              <p class="mono">DELIVERY / 4,000 ASSETS</p>
+              <h3>“Where are the photographs I’m in?”</h3>
+              <span>One gallery. No personal path.</span>
+            </div>
+            <div class="trace-state mono">UNSORTED</div>
+          </article>
+
+          <div class="trace-resolution mono">
+            <span>FRICTION DETECTED</span>
+            <i></i>
+            <span>ROUTE TO ONENODE</span>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- 05 SIGNAL -->
-    <section class="stage" id="s05" data-num="05" data-name="SIGNAL">
-      <div class="stage-inner">
-        <p class="eyebrow">05 — SIGNAL</p>
-        <p class="script">signal</p>
-        <h2 class="headline">ONE MESSAGE.<br />WORKING LINK.</h2>
-        <p class="sub">Reply in 24h.</p>
-        <div class="contact-lines">
-          <a href="mailto:hello@onenodeai.com">hello@onenodeai.com</a>
-          <a href="https://wa.me/919071092615?text=Hi%20OneNodeAI" target="_blank" rel="noopener">WhatsApp ↗</a>
+    <section class="chapter systems" id="systems" data-chapter="03" data-name="SYSTEMS">
+      <div class="systems-head">
+        <div>
+          <p class="kicker reveal">03 / THE SYSTEMS</p>
+          <h2 class="section-title reveal">THREE SYSTEMS.<br /><em>ONE OPERATING LAYER.</em></h2>
         </div>
-        <form id="leadForm" class="ghost-form" novalidate>
-          <input name="name" placeholder="Name" required />
-          <input name="email" type="email" placeholder="Email" required />
-          <input name="message" placeholder="Your site link?" required />
-          <button type="submit">Send →</button>
-        </form>
-        <p class="meta dim" id="formMsg" role="status"></p>
+        <p class="section-copy reveal">Each starts with one repetitive workflow. Each is shaped around your studio, your information, and the moments where people still matter.</p>
       </div>
+
+      <div class="system-list">
+        <article class="system-card is-selected reveal" data-system="night">
+          <header class="system-card-head">
+            <div class="system-number mono">01 / CONVERSATIONS</div>
+            <div class="system-status mono"><i></i>ACTIVE DEMO</div>
+          </header>
+          <div class="system-card-grid">
+            <div class="system-copy">
+              <p class="system-script">night bot</p>
+              <h3>THE STUDIO<br />THAT ANSWERS<br /><em>AFTER HOURS.</em></h3>
+              <p>Replies from your packages, availability, and tone. Qualifies the enquiry, shares the right next step, and hands over when a human should.</p>
+              <ul class="mono">
+                <li>WHATSAPP + WEB</li>
+                <li>YOUR OFFERS</li>
+                <li>HUMAN ESCALATION</li>
+              </ul>
+            </div>
+            <div class="system-demo chat-demo" aria-label="Night Bot conversation demonstration">
+              <div class="demo-bar mono"><span>WHATSAPP / 02:13</span><span class="signal-bars">▮▮▮</span></div>
+              <div class="chat-thread">
+                <div class="bubble bubble-user">Do you have wedding packages for November?<time>02:13</time></div>
+                <div class="typing-bubble"><i></i><i></i><i></i></div>
+                <div class="bubble bubble-bot">Yes — three collections start at ₹45k. I can share the full guide and check your date.<time>02:13 · AI</time></div>
+                <div class="bot-actions"><button type="button">VIEW PACKAGES</button><button type="button">CHECK DATE</button></div>
+              </div>
+              <div class="demo-footer mono"><span>REPLY GENERATED</span><span>HANDOFF: READY</span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="system-card reveal" data-system="brain">
+          <header class="system-card-head">
+            <div class="system-number mono">02 / KNOWLEDGE</div>
+            <div class="system-status mono"><i></i>ACTIVE DEMO</div>
+          </header>
+          <div class="system-card-grid">
+            <div class="system-copy">
+              <p class="system-script">second brain</p>
+              <h3>EVERY ANSWER.<br />ONE PLACE TO<br /><em>ASK FOR IT.</em></h3>
+              <p>Searches your connected studio knowledge and answers with sources—without asking your team to remember where the information lives.</p>
+              <ul class="mono">
+                <li>DRIVE + NOTION</li>
+                <li>SOURCE CITATIONS</li>
+                <li>PERMISSION-AWARE</li>
+              </ul>
+            </div>
+            <div class="system-demo brain-demo" aria-label="Second Brain search demonstration">
+              <div class="demo-bar mono"><span>STUDIO BRAIN / SEARCH</span><span>⌘ K</span></div>
+              <div class="brain-query"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"></circle><path d="m16 16 4 4"></path></svg><span>What is our cancellation policy?</span><i></i></div>
+              <div class="brain-answer">
+                <p>Bookings cancelled within 7 days of signing receive a full refund. After that, the booking fee is non-refundable.</p>
+                <div class="source-chips mono"><span>01 · NOTION / POLICY</span><span>02 · DRIVE / CONTRACT</span></div>
+              </div>
+              <div class="demo-footer mono"><span>2 SOURCES MATCHED</span><span>0.7S</span></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="system-card reveal" data-system="fotos">
+          <header class="system-card-head">
+            <div class="system-number mono">03 / DELIVERY</div>
+            <div class="system-status mono"><i></i>LIVE PRODUCT</div>
+          </header>
+          <div class="system-card-grid">
+            <div class="system-copy">
+              <p class="system-script">fotos</p>
+              <h3>FOUR THOUSAND<br />PHOTOS. ONE FACE<br /><em>TO FIND THEM.</em></h3>
+              <p>Guests upload a selfie and instantly find every photograph they appear in. Less searching for your team; a personal gallery for every guest.</p>
+              <ul class="mono">
+                <li>FACE-GROUPED</li>
+                <li>PRIVATE SEARCH</li>
+                <li>INSTANT ALBUMS</li>
+              </ul>
+              <a class="text-link" href="https://yashasnadigsyn.github.io/fotos" target="_blank" rel="noopener">OPEN LIVE FOTOS <i>↗</i></a>
+            </div>
+            <div class="system-demo fotos-demo" aria-label="Fotos face matching demonstration">
+              <div class="demo-bar mono"><span>FOTOS / FACE INDEX</span><span>4,000 FILES</span></div>
+              <div class="face-stage">
+                <div class="scan-line"></div>
+                <div class="face-card face-main"><div class="portrait portrait-a"><span>A</span></div><p>Asha</p><b class="mono">214 MATCHES</b></div>
+                <div class="face-card face-side face-one"><div class="portrait portrait-b"><span>R</span></div></div>
+                <div class="face-card face-side face-two"><div class="portrait portrait-c"><span>M</span></div></div>
+                <div class="match-ring"><i></i><i></i><i></i><i></i></div>
+              </div>
+              <div class="demo-footer mono"><span>FACE MATCH COMPLETE</span><span>VIEW ALBUM →</span></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="chapter protocol" id="protocol" data-chapter="04" data-name="PROTOCOL">
+      <div class="protocol-copy">
+        <p class="kicker reveal">04 / THE 48H PROTOCOL</p>
+        <h2 class="section-title reveal">FROM ONE BOTTLENECK<br />TO SOMETHING<br /><em>YOU CAN USE.</em></h2>
+        <p class="section-copy reveal">No transformation theatre. We choose one valuable workflow, connect only what it needs, and put a working prototype in your hands within 48 hours.</p>
+        <a class="button button-light magnetic reveal" href="#signal"><span>START WITH A SIGNAL</span><i>↗</i></a>
+      </div>
+
+      <div class="protocol-diagram reveal" aria-label="The 48 hour prototype process">
+        <div class="protocol-line"><i></i></div>
+        <article class="protocol-step" data-step="01">
+          <div class="step-node"><span></span></div>
+          <div class="step-time mono">T + 00H</div>
+          <h3>SIGNAL</h3>
+          <p>Send the repetitive task, the tools around it, and what “working” should mean.</p>
+        </article>
+        <article class="protocol-step" data-step="02">
+          <div class="step-node"><span></span></div>
+          <div class="step-time mono">T + 04H</div>
+          <h3>MAP</h3>
+          <p>We trace the decisions, information, edge cases, and the right human handoff.</p>
+        </article>
+        <article class="protocol-step" data-step="03">
+          <div class="step-node"><span></span></div>
+          <div class="step-time mono">T + 24H</div>
+          <h3>BUILD</h3>
+          <p>One focused system, connected to sample or limited live studio data.</p>
+        </article>
+        <article class="protocol-step" data-step="04">
+          <div class="step-node"><span></span></div>
+          <div class="step-time mono">T + 48H</div>
+          <h3>TEST LINK</h3>
+          <p>A working prototype to use, question, and evaluate before a larger commitment.</p>
+        </article>
+      </div>
+
+      <div class="pilot-spec reveal">
+        <div class="mono">PILOT OUTPUT / 01</div>
+        <p>One real workflow.<br />A working interface.<br />A clear next decision.</p>
+        <span class="pilot-seal" aria-hidden="true"><i>48</i><b>HOURS</b></span>
+      </div>
+    </section>
+
+    <section class="chapter signal" id="signal" data-chapter="05" data-name="SIGNAL">
+      <div class="signal-orbit" aria-hidden="true"><i></i><span></span></div>
+      <div class="signal-head">
+        <p class="kicker reveal">05 / SEND A SIGNAL</p>
+        <h2 class="signal-title reveal">WHAT’S THE ONE TASK<br />YOUR STUDIO SHOULD<br /><em>NEVER DO TWICE?</em></h2>
+      </div>
+
+      <form class="signal-form reveal" id="leadForm" novalidate>
+        <div class="field">
+          <label for="name">YOUR NAME</label>
+          <input id="name" name="name" autocomplete="name" placeholder="Name" required />
+        </div>
+        <div class="field">
+          <label for="studio">STUDIO / COMPANY</label>
+          <input id="studio" name="studio" autocomplete="organization" placeholder="Studio name" />
+        </div>
+        <div class="field">
+          <label for="email">EMAIL</label>
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="you@studio.com" required />
+        </div>
+        <div class="field field-wide">
+          <label for="workflow">THE BOTTLENECK</label>
+          <textarea id="workflow" name="workflow" rows="1" placeholder="We keep losing time to…" required></textarea>
+        </div>
+        <button class="send-button magnetic" type="submit"><span>SEND THE SIGNAL</span><i>↗</i></button>
+        <p class="form-status mono" id="formMsg" role="status"></p>
+      </form>
+
+      <div class="direct-contact reveal">
+        <p class="mono">PREFER A DIRECT LINE?</p>
+        <a href="mailto:hello@onenodeai.com">hello@onenodeai.com <i>↗</i></a>
+        <a href="https://wa.me/919071092615?text=Hi%20OneNodeAI%2C%20I%20have%20a%20workflow%20to%20discuss." target="_blank" rel="noopener">WHATSAPP <i>↗</i></a>
+      </div>
+
+      <footer class="site-footer mono">
+        <span>© 2026 ONENODEAI</span>
+        <span>AI SYSTEMS FOR CREATIVE STUDIOS</span>
+        <a href="#intro">BACK TO ORIGIN ↑</a>
+      </footer>
     </section>
   </main>
+
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"><span></span></div>
 
   <script src="script.js"></script>
 </body>

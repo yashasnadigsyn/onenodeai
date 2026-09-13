@@ -3,191 +3,146 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OneNodeAI — We Build AI Services That Get Customers</title>
-  <meta name="description" content="OneNodeAI builds AI customer support bots, LLM apps, custom ML models, and Collections — face-clustering photo platform for photography companies." />
-  <meta property="og:title" content="OneNodeAI — We Build AI Services" />
-  <meta property="og:description" content="AI Support Bots, LLM Apps, Custom ML + Collections for photographers. Get a demo." />
+  <title>OneNodeAI — One Node. All Your AI.</title>
+  <meta name="description" content="OneNodeAI: night-shift bot, second-brain search, Fotos face-grouped albums. Live in 48 hours." />
+  <meta property="og:title" content="OneNodeAI — One Node. All Your AI." />
+  <meta property="og:description" content="Scroll: 2am bot, second brain, instant albums." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://onenodeai.com" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FFF7ED'/><path d='M30 20 L70 50 L30 80' stroke='%23EA580C' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/><circle cx='70' cy='50' r='8' fill='%23F59E0B'/></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><ellipse cx='50' cy='50' rx='46' ry='20' fill='none' stroke='white' stroke-width='4'/><circle cx='50' cy='50' r='7' fill='white'/></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Inter:wght@300;400;500&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <canvas id="network" aria-hidden="true"></canvas>
-  <div class="bg-wash" aria-hidden="true"></div>
+<body data-active="01">
 
-  <header class="nav" id="nav">
-    <div class="container nav-inner">
-      <a href="#top" class="logo"><span class="logo-mark">◢</span> OneNodeAI</a>
-      <nav class="nav-links" id="navLinks">
-        <a href="#services">Services</a>
-        <a href="#product">Collections</a>
-        <a href="#process">Process</a>
-        <a href="#why">Why Us</a>
-        <a href="#contact" class="btn btn-sm btn-primary nav-cta">Get a Demo</a>
-      </nav>
-      <button class="hamburger" id="hamburger" aria-label="Menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
+  <!-- top bar: pill left, index right + progress -->
+  <header class="brand">
+    <a href="#s01" class="pill" aria-label="OneNodeAI home"><i class="pill-dot" aria-hidden="true"></i>ONENODEAI</a>
+    <div class="brand-index" aria-label="Chapter index"><span id="topNum">01</span><em>/</em><span>05</span></div>
   </header>
+  <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
 
-  <main id="top">
-    <!-- HERO -->
-    <section class="hero container">
-      <div class="hero-badge">● AI Services Studio — onenodeai.com</div>
-      <h1>We Build <span class="grad">AI Services</span><br />That Get Customers.</h1>
-      <p class="hero-sub">AI support bots for websites, custom LLM apps, ML models — plus <strong>Collections</strong>, our face-clustering photo platform for wedding &amp; event photographers.</p>
-      <div class="hero-ctas">
-        <a href="#contact" class="btn btn-primary">Get a Demo →</a>
-        <a href="#product" class="btn btn-ghost">See Collections</a>
-      </div>
-      <div class="hero-stats">
-        <div><strong>24/7</strong><span>AI support bots</span></div>
-        <div><strong>Face AI</strong><span>auto-clustering</span></div>
-        <div><strong>7–21d</strong><span>typical MVP ship</span></div>
-      </div>
-      <p class="hero-hint">Move your mouse — the network reacts ✦</p>
-    </section>
+  <!-- right rail 01-05 -->
+  <nav class="rail" aria-label="Chapters">
+    <div class="rail-line"></div>
+    <div class="rail-fill" id="railFill"></div>
+    <a href="#s01" data-target="s01" class="rail-item is-active"><span class="n">01</span><span class="t">INTRO</span></a>
+    <a href="#s02" data-target="s02" class="rail-item"><span class="n">02</span><span class="t">NIGHT BOT</span></a>
+    <a href="#s03" data-target="s03" class="rail-item"><span class="n">03</span><span class="t">BRAIN</span></a>
+    <a href="#s04" data-target="s04" class="rail-item"><span class="n">04</span><span class="t">FOTOS</span></a>
+    <a href="#s05" data-target="s05" class="rail-item"><span class="n">05</span><span class="t">SIGNAL</span></a>
+  </nav>
 
-    <!-- TRUST -->
-    <section class="strip">
-      <div class="container strip-inner">
-        <span>BUILT FOR</span>
-        <span>Photography Studios</span><i>•</i>
-        <span>SMBs &amp; Startups</span><i>•</i>
-        <span>Agencies</span><i>•</i>
-        <span>Event Companies</span>
-      </div>
-    </section>
+  <!-- bottom chrome -->
+  <div class="foot-left">© 2026 OneNodeAI</div>
+  <div class="foot-center" id="footCenter">
+    <span class="mouse" aria-hidden="true"><i></i></span>
+    <span class="scroll-word">SCROLL</span>
+    <div class="dots" role="tablist" aria-label="Chapters">
+      <button data-target="s01" class="is-active" aria-label="01 Intro"></button>
+      <button data-target="s02" aria-label="02 Night bot"></button>
+      <button data-target="s03" aria-label="03 Brain"></button>
+      <button data-target="s04" aria-label="04 Fotos"></button>
+      <button data-target="s05" aria-label="05 Signal"></button>
+    </div>
+    <span class="counter"><b id="curNum">01</b> / 05</span>
+  </div>
+  <div class="foot-right">48H PILOT</div>
 
-    <!-- SERVICES -->
-    <section id="services" class="section container">
-      <p class="eyebrow">Services</p>
-      <h2>Everything you need to ship AI.</h2>
-      <p class="muted">Pick one. We design, build, and support it in production.</p>
-      <div class="grid-3">
-        <article class="card reveal">
-          <div class="icon">💬</div>
-          <h3>AI Customer Support</h3>
-          <p>Website bots trained on your FAQs, pricing, and docs. Deflect tickets, capture leads, escalate to humans.</p>
-          <ul><li>RAG on your data</li><li>WhatsApp + web widget</li><li>Human handoff</li></ul>
-        </article>
-        <article class="card reveal">
-          <div class="icon">🧠</div>
-          <h3>LLM Apps &amp; Chatbots</h3>
-          <p>Custom GPT apps, internal copilots, document Q&amp;A, voice agents — wired to your tools.</p>
-          <ul><li>OpenAI / Claude / open models</li><li>CRM &amp; API integrations</li><li>Eval + guardrails</li></ul>
-        </article>
-        <article class="card reveal">
-          <div class="icon">📸</div>
-          <h3>Custom ML + Vision</h3>
-          <p>Face clustering, image search, prediction models, fine-tuning for your domain.</p>
-          <ul><li>Face clustering engine</li><li>Search by face / event</li><li>Private deployment</li></ul>
-        </article>
+  <main>
+    <!-- 01 INTRO -->
+    <section class="stage" id="s01" data-num="01" data-name="INTRO">
+      <div class="stage-inner">
+        <p class="eyebrow">01 / 05</p>
+        <p class="script">OneNodeAi</p>
+        <h1 class="headline">ONE NODE.<br />ALL YOUR AI.</h1>
+        <p class="sub">Bot. Brain. Fotos. Live in 48 hours.</p>
       </div>
     </section>
 
-    <!-- PRODUCT SPOTLIGHT -->
-    <section id="product" class="section container">
-      <div class="spotlight">
-        <div class="spot-copy">
-          <p class="eyebrow">Flagship product</p>
-          <h2>Collections — Google Photos alternative for photographers.</h2>
-          <p class="muted">Store wedding &amp; corporate event photos. Our AI automatically clusters faces so each guest gets their own collection. Send one link, clients find themselves instantly.</p>
-          <ol class="steps-mini">
-            <li><strong>1. Upload event</strong> — bulk upload full shoot.</li>
-            <li><strong>2. Auto-cluster</strong> — faces grouped per person.</li>
-            <li><strong>3. Share link</strong> — visitor opens their collection, downloads.</li>
-          </ol>
-          <div class="spot-ctas">
-            <a href="#contact" class="btn btn-primary">Request access</a>
-            <span class="note">For photography companies</span>
+    <!-- 02 NIGHT BOT -->
+    <section class="stage" id="s02" data-num="02" data-name="NIGHT BOT">
+      <div class="stage-inner">
+        <p class="eyebrow">02 — NIGHT BOT</p>
+        <p class="script">night bot</p>
+        <h2 class="headline">2 AM. NO REPLY.<br />LOST BOOKING.</h2>
+        <p class="sub">“Wedding packages?” — 9h silence.</p>
+        <div class="demo chat" aria-hidden="true">
+          <div class="msg user">Wedding packages?</div>
+          <div class="msg typing"><span></span><span></span><span></span></div>
+          <div class="msg bot">3 packages from ₹45k. Full list sent.<em>~4S · WHATSAPP</em></div>
+        </div>
+        <a class="line-link" href="#s05">Fix this →</a>
+      </div>
+    </section>
+
+    <!-- 03 SECOND BRAIN -->
+    <section class="stage" id="s03" data-num="03" data-name="BRAIN">
+      <div class="stage-inner">
+        <p class="eyebrow">03 — BRAIN</p>
+        <p class="script">second brain</p>
+        <h2 class="headline">SCATTERED DOCS.<br />ONE SEARCH.</h2>
+        <p class="sub">Drive. Notion. Chats.</p>
+        <div class="demo" aria-hidden="true">
+          <div class="search-bar"><span class="lens">⌕</span><span class="q">refund policy?</span><span class="caret"></span></div>
+          <div class="cite c1"><b>NOTION · POLICY</b>Full refund till 7 days.</div>
+          <div class="cite c2"><b>DRIVE · PRICELIST</b>Clause §3 matched.</div>
+        </div>
+        <a class="line-link" href="#s05">Fix this →</a>
+      </div>
+    </section>
+
+    <!-- 04 FOTOS -->
+    <section class="stage" id="s04" data-num="04" data-name="FOTOS">
+      <div class="stage-inner">
+        <p class="eyebrow">04 — FOTOS</p>
+        <p class="script">fotos</p>
+        <h2 class="headline">4,000 PHOTOS.<br />ZERO DELIVERED.</h2>
+        <p class="sub">Guests can't find themselves.</p>
+        <div class="demo faces" aria-hidden="true">
+          <div class="pile p1">
+            <div class="avatars"><i style="background:linear-gradient(135deg,#5a4a3a,#2a2118)">A</i><i style="background:linear-gradient(135deg,#4a5a6a,#1d262e)">S</i><i style="background:linear-gradient(135deg,#5a3a4a,#2b1a24)">M</i></div>
+            <span>ASHA · 214</span>
           </div>
-        </div>
-        <div class="spot-mock" aria-hidden="true">
-          <div class="mock-window">
-            <div class="mock-bar"><i></i><i></i><i></i><span>collections.onenodeai.com / sharma-wedding</span></div>
-            <div class="mock-faces">
-              <div class="face"><span>👰</span><p>Aarohi · 214</p></div>
-              <div class="face"><span>🤵</span><p>Vihaan · 198</p></div>
-              <div class="face"><span>👪</span><p>Family · 342</p></div>
-              <div class="face"><span>🎉</span><p>Guests · 1.2k</p></div>
-            </div>
-            <div class="mock-link">🔗 Share: onenodeai.com/c/sharma-wedding <button type="button">Copy</button></div>
+          <div class="pile p2">
+            <div class="avatars"><i style="background:linear-gradient(135deg,#3a5a4a,#182b22)">R</i><i style="background:linear-gradient(135deg,#5a5a3a,#2b2b18)">V</i><i style="background:linear-gradient(135deg,#3a3a5a,#1c1c2c)">K</i></div>
+            <span>RAVI · 186</span>
           </div>
+          <div class="scan"></div>
         </div>
+        <a class="fotos-link" href="https://yashasnadigsyn.github.io/fotos" target="_blank" rel="noopener">
+          <span class="f-text">
+            <span class="f-top">LIVE DEMO ↗</span>
+            <span class="f-title">Open Fotos</span>
+          </span>
+          <span class="f-arrow" aria-hidden="true">→</span>
+        </a>
       </div>
     </section>
 
-    <!-- PROCESS -->
-    <section id="process" class="section container">
-      <p class="eyebrow">Process</p>
-      <h2>From idea to live in weeks.</h2>
-      <div class="grid-3">
-        <div class="card reveal"><h3>01 — Discover</h3><p>30-min call. We map your use-case, data, and success metric. Fixed quote.</p></div>
-        <div class="card reveal"><h3>02 — Build</h3><p>Prototype in days, iterate weekly. You see a live link, not slides.</p></div>
-        <div class="card reveal"><h3>03 — Launch &amp; Support</h3><p>Deploy to your domain, analytics, retraining + support.</p></div>
-      </div>
-    </section>
-
-    <!-- WHY -->
-    <section id="why" class="section container">
-      <div class="why-box">
-        <div>
-          <p class="eyebrow">Why OneNodeAI</p>
-          <h2>One node. All your AI.</h2>
-          <p class="muted">Single team for bot, model, and infra — no juggling vendors.</p>
+    <!-- 05 SIGNAL -->
+    <section class="stage" id="s05" data-num="05" data-name="SIGNAL">
+      <div class="stage-inner">
+        <p class="eyebrow">05 — SIGNAL</p>
+        <p class="script">signal</p>
+        <h2 class="headline">ONE MESSAGE.<br />WORKING LINK.</h2>
+        <p class="sub">Reply in 24h.</p>
+        <div class="contact-lines">
+          <a href="mailto:hello@onenodeai.com">hello@onenodeai.com</a>
+          <a href="https://wa.me/919071092615?text=Hi%20OneNodeAI" target="_blank" rel="noopener">WhatsApp ↗</a>
         </div>
-        <ul class="why-list">
-          <li>✓ <strong>Production-ready</strong> — not demos, real auth, privacy, scaling</li>
-          <li>✓ <strong>Fast MVPs</strong> — working version in 7–21 days</li>
-          <li>✓ <strong>Your data stays yours</strong> — private deployments available</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact" class="section container">
-      <p class="eyebrow">Get in touch</p>
-      <h2>Tell us what to build.</h2>
-      <p class="muted">Reply within 24h — <a href="mailto:hello@onenodeai.com">hello@onenodeai.com</a> · <a href="tel:+919071092615">+91 90710 92615</a></p>
-      <div class="contact-grid">
-        <form id="leadForm" class="card form" novalidate>
-          <label>Name<input name="name" required placeholder="Your name" /></label>
-          <label>Email<input name="email" type="email" required placeholder="you@company.com" /></label>
-          <label>Company type
-            <select name="type">
-              <option>Photography company</option>
-              <option>Startup / SMB</option>
-              <option>Agency</option>
-              <option>Other</option>
-            </select>
-          </label>
-          <label>What do you need?<textarea name="message" rows="4" required placeholder="e.g. AI support bot for my studio website + Collections access for 5000 wedding photos"></textarea></label>
-          <button class="btn btn-primary" type="submit">Send →</button>
-          <p class="form-msg" id="formMsg" role="status"></p>
+        <form id="leadForm" class="ghost-form" novalidate>
+          <input name="name" placeholder="Name" required />
+          <input name="email" type="email" placeholder="Email" required />
+          <input name="message" placeholder="Your site link?" required />
+          <button type="submit">Send →</button>
         </form>
-        <div class="card contact-side">
-          <h3>Prefer chat?</h3>
-          <p class="muted">Fastest response on WhatsApp or phone.</p>
-          <a class="btn btn-ghost" id="whatsappBtn" href="https://wa.me/919071092615?text=Hi%20OneNodeAI%2C%20I%20need%20an%20AI%20bot" target="_blank" rel="noopener">💬 WhatsApp: +91 90710 92615</a>
-          <a class="btn btn-ghost" href="tel:+919071092615">📞 Call: +91 90710 92615</a>
-          <a class="btn btn-ghost" href="mailto:hello@onenodeai.com?subject=OneNodeAI%20Demo">✉️ hello@onenodeai.com</a>
-        </div>
+        <p class="meta dim" id="formMsg" role="status"></p>
       </div>
     </section>
   </main>
-
-  <footer>
-    <div class="container foot">
-      <span><span class="logo-mark">◢</span> OneNodeAI © <span id="year"></span></span>
-      <span class="muted">onenodeai.com · <a href="mailto:hello@onenodeai.com">hello@onenodeai.com</a> · <a href="tel:+919071092615">+91 90710 92615</a></span>
-    </div>
-  </footer>
 
   <script src="script.js"></script>
 </body>

@@ -190,18 +190,69 @@ document.querySelectorAll('.system-card').forEach((card) => {
   });
 });
 
-/* Demo buttons give immediate feedback, but never pretend to perform a real booking. */
-document.querySelectorAll('.bot-actions button').forEach((button) => {
-  button.addEventListener('click', () => {
-    const footer = button.closest('.system-demo')?.querySelector('.demo-footer span:first-child');
-    if (!footer) return;
-    const previous = footer.textContent;
-    footer.textContent = button.textContent === 'CHECK DATE' ? 'HANDOFF PREPARED' : 'GUIDE READY';
-    window.setTimeout(() => { footer.textContent = previous; }, 1800);
-  });
-});
+/* Dynamic hashtag cycling engine (#___ONAI) */
+const dynamicHashtags = [
+  'YourPhotos',
+  'YourGalleries',
+  'YourPortfolio',
+  'YourArchive',
+  'YourMasterpieces',
+  'Organize',
+  'Deliver',
+  'Scale',
+  'Store',
+  'Search',
+  'SmartTagging',
+  'FaceSearch',
+  'YourStudio',
+  'YourBusiness'
+];
 
-/* Contact form uses the current no-backend mail handoff with clearer context. */
+const hashtagDynamicEl = document.getElementById('hashtagDynamic');
+
+if (hashtagDynamicEl) {
+  let tagIndex = 0;
+  let charIndex = dynamicHashtags[0].length;
+  let isDeleting = false;
+  let typingTimeout = null;
+
+  if (reduceMotion) {
+    setInterval(() => {
+      tagIndex = (tagIndex + 1) % dynamicHashtags.length;
+      hashtagDynamicEl.textContent = dynamicHashtags[tagIndex];
+    }, 2800);
+  } else {
+    function typeLoop() {
+      const currentWord = dynamicHashtags[tagIndex];
+
+      if (isDeleting) {
+        charIndex = Math.max(0, charIndex - 1);
+        hashtagDynamicEl.textContent = currentWord.substring(0, charIndex);
+      } else {
+        charIndex = Math.min(currentWord.length, charIndex + 1);
+        hashtagDynamicEl.textContent = currentWord.substring(0, charIndex);
+      }
+
+      let speed = isDeleting ? 42 : 82;
+
+      if (!isDeleting && charIndex === currentWord.length) {
+        speed = 2100; // Pause at completed hashtag
+        isDeleting = true;
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        tagIndex = (tagIndex + 1) % dynamicHashtags.length;
+        speed = 320; // Brief breath before typing next word
+      }
+
+      typingTimeout = setTimeout(typeLoop, speed);
+    }
+
+    // Start typing loop after hero reveal
+    setTimeout(typeLoop, 1400);
+  }
+}
+
+/* Contact form for studio onboarding with mailto handoff */
 const leadForm = document.getElementById('leadForm');
 const workflowField = document.getElementById('workflow');
 
@@ -221,13 +272,13 @@ leadForm?.addEventListener('submit', (event) => {
   const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
   if (!name || !validEmail || !workflow) {
-    if (output) output.textContent = 'ADD YOUR NAME, A VALID EMAIL, AND THE BOTTLENECK.';
+    if (output) output.textContent = 'PLEASE PROVIDE YOUR NAME, A VALID EMAIL, AND STUDIO FOCUS.';
     return;
   }
 
-  const subject = encodeURIComponent(`48h pilot signal — ${studio || name}`);
+  const subject = encodeURIComponent(`OneNodeAI Studio Access — ${studio || name}`);
   const body = encodeURIComponent(
-    `Name: ${name}\nStudio: ${studio || '—'}\nEmail: ${email}\n\nWorkflow bottleneck:\n${workflow}\n\n— sent via onenodeai.com`
+    `Photographer / Name: ${name}\nStudio / Brand: ${studio || '—'}\nEmail: ${email}\n\nStudio Focus & Bottlenecks:\n${workflow}\n\n— sent via onenodeai.com`
   );
 
   if (output) output.textContent = 'OPENING YOUR MAIL CLIENT…';
